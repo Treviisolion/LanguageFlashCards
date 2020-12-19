@@ -12,5 +12,5 @@ Pronunciation string
 
 Synonyms
 -
-SynonymID PK int
-WordID int FK >- Morphemes.Id
+Synonym PK string
+WordID PK int FK >- Morphemes.Id
