@@ -1,7 +1,7 @@
 """Language Flashcard application"""
 
 from flask import Flask, render_template
-from models import db, connect_db
+from models import db, connect_db, User, Word, Synonym
 import os
 
 app = Flask(__name__)

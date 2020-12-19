@@ -3,7 +3,7 @@ Users
 Username PK string
 Password string # Salted and encrypted of course
 
-Morphemes
+Words
 -
 Id PK int
 User int FK >- Users.Username
