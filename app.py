@@ -5,10 +5,10 @@ from models import db, connect_db, User, Word, Synonym
 import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get(
-    'SECRET_KEY', 'JohnathonAppleseed452')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    'DATABASE_URL', 'postgresql:///flashcards')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY',
+                                          'JohnathonAppleseed452')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL',
+                                                       'postgresql:///flashcards')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 
