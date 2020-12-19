@@ -1,13 +1,12 @@
 Users
 -
-UserId PK int
-Username string
+Username PK string
 Password string # Salted and encrypted of course
 
 Morphemes
 -
 WordId PK int
-UserId int FK >- Users.UserId
+UserId int FK >- Users.Username
 Word string
 Pronunciation string
 
