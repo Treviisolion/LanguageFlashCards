@@ -5,12 +5,12 @@ Password string # Salted and encrypted of course
 
 Morphemes
 -
-WordId PK int
-UserId int FK >- Users.Username
+Id PK int
+User int FK >- Users.Username
 Word string
 Pronunciation string
 
 Synonyms
 -
 SynonymID PK int
-WordID int FK >- Morphemes.WordId
+WordID int FK >- Morphemes.Id
