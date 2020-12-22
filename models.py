@@ -46,7 +46,7 @@ class User(db.Model):
 class UserLanguage(db.Model):
     """The languages that the user is practicing, plus English as the default one to translate into"""
 
-    __tablename__ 'languages'
+    __tablename__ = 'languages'
     __table_args__ = (db.UniqueConstraint('user', 'language'),)
 
     id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
@@ -60,11 +60,28 @@ class UserLanguage(db.Model):
     words = db.relationship('Word', cascade='all, delete-orphan')
 
 
+class Translation(db.Model):
+    """Translations, i.e. any plausible translation for the given word"""
+
+    __tablename__ = 'translations'
+
+    word = db.Column(
+        db.Integer(),
+        db.ForeignKey('words.id', ondelete='cascade'),
+        primary_key=True
+    )
+    translation = db.Column(
+        db.Integer(),
+        db.ForeignKey('words.id', ondelete='cascade'),
+        primary_key=True
+    )
+
+
 class Word(db.Model):
     """Language morphemes, ideally base form of words"""
 
     __tablename__ = 'words'
-    __table_args__ = (db.UniqueConstraint('user', 'word'),)
+    __table_args__ = (db.UniqueConstraint('language', 'word'),)
 
     id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
     language = db.Column(
@@ -73,12 +90,9 @@ class Word(db.Model):
         nullable=False
     )
     word = db.Column(db.String(), nullable=False)
-    pronunciations = db.Column(db.String(), nullable=False) # Multiple pronunciations are separated by comma delimited values
+    # Multiple pronunciations are separated by comma delimited values
+    pronunciations = db.Column(db.String(), nullable=False)
 
-    pronunciations = db.Relationship(
-        'Pronuciation',
-        cascade='all, delete-orphan'
-    )
     translations = db.relationship(
         'Word',
         secondary='translations',
@@ -90,21 +104,4 @@ class Word(db.Model):
         secondary='translations',
         primaryjoin=(Translation.translation == id),
         secondaryjoin=(Translation.word == id)
-    )
-
-
-class Translation(db.Model):
-    """Translations, i.e. any plausible translation for the given word"""
-
-    __tablename__ = 'translations'
-
-    word = db.Column(
-        db.Intger(),
-        db.ForeignKey('words.id', ondelete='cascade'),
-        primary_key=True
-    )
-    translation = db.Column(
-        db.Integer(),
-        db.ForeignKey('words.id', ondelete='cascade'),
-        primary_key=True
     )
