@@ -7,7 +7,7 @@ UserLanguages
 -
 Id PK int
 User string FK >- Users.Username
-Language string
+Language string(3)
 
 Words
 -

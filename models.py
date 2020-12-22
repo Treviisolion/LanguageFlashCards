@@ -51,7 +51,7 @@ class UserLanguage(db.Model):
 
     id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
     user = db.Column(
-        db.String(),
+        db.String(3),
         db.ForeignKey('users.username'),
         nullable=False
     )
