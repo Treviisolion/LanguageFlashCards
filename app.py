@@ -125,3 +125,12 @@ def login_user():
             abort(404)
     else:
         return render_template('login.html', form=form)
+
+
+@app.route('/logout')
+def logout_user():
+    """Handle logout of user."""
+
+    do_logout()
+    flash("Successfully Logged Out!", "success")
+    return redirect('/login')
