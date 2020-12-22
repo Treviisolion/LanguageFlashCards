@@ -53,11 +53,7 @@ def do_logout():
 def get_main_page():
     """Returns the main page"""
 
-    if g.user:
-        username = g.user.username
-    else:
-        username = 'None'
-    return render_template('main.html', username=username)
+    return render_template('main.html')
 
 
 @app.route('/signup', methods=['GET', 'POST'])
