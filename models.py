@@ -73,6 +73,7 @@ class Word(db.Model):
         nullable=False
     )
     word = db.Column(db.String(), nullable=False)
+    pronunciations = db.Column(db.String(), nullable=False) # Multiple pronunciations are separated by comma delimited values
 
     pronunciations = db.Relationship(
         'Pronuciation',
@@ -90,15 +91,6 @@ class Word(db.Model):
         primaryjoin=(Translation.translation == id),
         secondaryjoin=(Translation.word == id)
     )
-
-
-class Pronunciation(db.Model):
-    """Pronuciations for words"""
-
-    __tablename__ = 'pronuciations'
-
-    word = db.Column(db.Integer(), db.ForeignKey('words.id'), primary_key=True)
-    pronuciation = db.Column(db.String(), primary_key=True)
 
 
 class Translation(db.Model):

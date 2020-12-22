@@ -14,11 +14,7 @@ Words
 Id PK int
 Language int FK >- UserLanguages.Id
 Word string
-
-Pronuciations
--
-Word PK int FK >- Words.Id
-Pronunciation PK string
+Pronunciations string # Multiple pronunciations are separated by commas
 
 Translations
 -
