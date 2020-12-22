@@ -51,11 +51,11 @@ class UserLanguage(db.Model):
 
     id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
     user = db.Column(
-        db.String(3),
+        db.String(),
         db.ForeignKey('users.username'),
         nullable=False
     )
-    language = db.Column(db.String(), nullable=False)
+    language = db.Column(db.String(3), nullable=False)
 
     words = db.relationship('Word', cascade='all, delete-orphan')
 
