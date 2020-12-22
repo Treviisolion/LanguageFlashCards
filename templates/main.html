@@ -2,6 +2,8 @@
 
 {% block content %}
 
-Placeholder
+Current User: {{username}}
+<a href="{{url_for('signup_user')}}">Sign Up</a>
+<a href="{{url_for('login_user')}}">Login</a>
 
 {% endblock %}
