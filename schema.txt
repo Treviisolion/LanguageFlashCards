@@ -3,14 +3,24 @@ Users
 Username PK string
 Password string # Salted and encrypted of course
 
+UserLanguages
+-
+Id PK int
+User string FK >- Users.Username
+Language string
+
 Words
 -
 Id PK int
-User int FK >- Users.Username
+Language int FK >- UserLanguages.Id
 Word string
-Pronunciation string
 
-Synonyms
+Pronuciations
 -
-Synonym PK string
-WordID PK int FK >- Morphemes.Id
+Word PK int FK >- Words.Id
+Pronunciation PK string
+
+Translations
+-
+ForeignWord PK int FK >- Words.Id
+Translation PK int FK >- Words.Id

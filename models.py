@@ -22,7 +22,7 @@ class User(db.Model):
     username = db.Column(db.String(), primary_key=True)
     password = db.Column(db.String(), nullable=False)
 
-    words = db.relationship('Word', cascade="all, delete-orphan")
+    languages = db.relationship('UserLanguage', cascade='all, delete-orphan')
 
     @classmethod
     def register(cls, username, password):
@@ -43,28 +43,76 @@ class User(db.Model):
             return False
 
 
-class Word(db.Model):
-    """Foreign language morphemes, ideally base form of words"""
+class UserLanguage(db.Model):
+    """The languages that the user is practicing, plus English as the default one to translate into"""
 
-    __tablename__ = 'words'
-    __table_args__ = (db.UniqueConstraint('user', 'word', 'pronunciation'),)
+    __tablename__ 'languages'
+    __table_args__ = (db.UniqueConstraint('user', 'language'),)
 
     id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
-    user = db.Column(db.String(),
-                     db.ForeignKey('users.username'),
-                     nullable=False)
+    user = db.Column(
+        db.String(),
+        db.ForeignKey('users.username'),
+        nullable=False
+    )
+    language = db.Column(db.String(), nullable=False)
+
+    words = db.relationship('Word', cascade='all, delete-orphan')
+
+
+class Word(db.Model):
+    """Language morphemes, ideally base form of words"""
+
+    __tablename__ = 'words'
+    __table_args__ = (db.UniqueConstraint('user', 'word'),)
+
+    id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
+    language = db.Column(
+        db.Integer(),
+        db.ForeignKey('languages.id'),
+        nullable=False
+    )
     word = db.Column(db.String(), nullable=False)
-    pronunciation = db.Column(db.String(), nullable=False)
 
-    synonyms = db.relationship('Synonym', cascade="all, delete-orphan")
+    pronunciations = db.Relationship(
+        'Pronuciation',
+        cascade='all, delete-orphan'
+    )
+    translations = db.relationship(
+        'Word',
+        secondary='translations',
+        primaryjoin=(Translation.word == id),
+        secondaryjoin=(Translation.translation == id)
+    )
+    translation_for = db.relationship(
+        'Word',
+        secondary='translations',
+        primaryjoin=(Translation.translation == id),
+        secondaryjoin=(Translation.word == id)
+    )
 
 
-class Synonym(db.Model):
-    """English language synonyms, i.e. any plausible translation for the given word"""
+class Pronunciation(db.Model):
+    """Pronuciations for words"""
 
-    __tablename__ = 'synonyms'
+    __tablename__ = 'pronuciations'
 
-    synonym = db.Column(db.String(), primary_key=True)
-    word_id = db.Column(db.Integer(),
-                        db.ForeignKey('words.id'),
-                        primary_key=True)
+    word = db.Column(db.Integer(), db.ForeignKey('words.id'), primary_key=True)
+    pronuciation = db.Column(db.String(), primary_key=True)
+
+
+class Translation(db.Model):
+    """Translations, i.e. any plausible translation for the given word"""
+
+    __tablename__ = 'translations'
+
+    word = db.Column(
+        db.Intger(),
+        db.ForeignKey('words.id', ondelete='cascade'),
+        primary_key=True
+    )
+    translation = db.Column(
+        db.Integer(),
+        db.ForeignKey('words.id', ondelete='cascade'),
+        primary_key=True
+    )
