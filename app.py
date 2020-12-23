@@ -143,6 +143,7 @@ def logout_user():
 @app.route('/user')
 def get_user_page():
     """Gets the main page for the logged in user"""
+
     if not g.user:
         flash('Access unauthorized', 'danger')
         return redirect(url_for('get_main_page'))
@@ -153,10 +154,19 @@ def get_user_page():
 @app.route('/user/<string:language>')
 def get_language_page(language):
     """Gets the main page for the specific language"""
-    pass
+
+    if not g.user:
+        flash('Access unauthorized', 'danger')
+        return redirect(url_for('get_main_page'))
+
+    selected_language = UserLanguage.query.filter_by(user=g.user.username, language=language)
+    if selected_language:
+        return render_template('language.html', language=selected_language)
+    else:
+        abort(404)
 
 
-@app.route('/language/add', methods=['GET', 'POST'])
+@app.route('/user/language/add', methods=['GET', 'POST'])
 def add_language():
     """Adds a new language to the user"""
 
@@ -188,7 +198,11 @@ def add_language():
         return render_template('new_language.html', form=form)
 
 
-@app.route('/<string:language>/add', methods=['GET', 'POST'])
-def add_word():
+@app.route('/user/<string:language>/add', methods=['GET', 'POST'])
+def add_word(language):
     """Adds a new word to the language"""
+    pass
+
+@app.route('/user/<string:language>/<string:word>')
+def get_word_page(language, word):
     pass

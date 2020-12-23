@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+Words:
+<ul>
+    {% for word in language.words %}
+    <li><a href="{{url_for('get_word_page', language=language.language, word=word.word)}}">{{word.word}}</a></li>
+    {% endfor %}
+</ul>
+<a href="{{url_for('add_word', language=language.language)}}">Add Word</a>
+<a href="{{url_for('get_user_page')}}">Back to User Page</a>
+
+{% endblock content %}
