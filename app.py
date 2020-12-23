@@ -22,8 +22,11 @@ connect_db(app)
 db.create_all()
 
 CURR_USER_KEY = "curr_user"
-ENGLISH = 'EN'
+DEFAULT_USER_LANGUAGE = 'EN'
 
+
+############################
+# Helper functions
 
 @app.before_request
 def add_user_to_g():
@@ -49,6 +52,9 @@ def do_logout():
         del session[CURR_USER_KEY]
 
 
+############################
+# Generic User Interactions
+
 @app.route('/')
 def get_main_page():
     """Returns the main page"""
@@ -71,7 +77,7 @@ def signup_user():
 
             user_language = UserLanguage(
                 user=user.username,
-                language=ENGLISH
+                language=DEFAULT_USER_LANGUAGE
             )
 
             db.session.add(user)
@@ -128,5 +134,35 @@ def logout_user():
     """Handle logout of user."""
 
     do_logout()
-    flash("Successfully Logged Out!", "success")
+    flash('Logged out', 'success')
     return redirect('/login')
+
+
+############################
+# Specific user interactions
+
+@app.route('/user')
+def get_user_page():
+    """Gets the main page for the logged in user"""
+    if not g.user:
+        flash('Access unauthorized', 'danger')
+        return redirect('/')
+    
+    return render_template('user.html', default_language=DEFAULT_USER_LANGUAGE)
+
+@app.route('/user/<string:language>')
+def get_language_page(language):
+    """Gets the main page for the specific language"""
+    pass
+
+
+@app.route('/language/add', methods=['GET', 'POST'])
+def add_language():
+    """Adds a new language to the user"""
+    pass
+
+
+@app.route('/<string:language>/add', methods=['GET', 'POST'])
+def add_word():
+    """Adds a new word to the language"""
+    pass

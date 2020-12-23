@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+Languages:
+<ul>
+    {% for language in g.user.languages %}
+    {% if language.language != default_language %}
+    <li><a href="{{url_for('get_language_page', language=language.language)}}">{{language.language}}</a></li>
+    {% endif %}
+    {% endfor %}
+</ul>
+<a href="{{url_for('add_language')}}">Add language</a>
+<a href="{{url_for('get_main_page')}}">Main Page</a>
+
+{% endblock content %}
