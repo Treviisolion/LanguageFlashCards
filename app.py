@@ -1,9 +1,9 @@
 """Language Flashcard application"""
 
-from flask import Flask, render_template, redirect, session, g, abort, flash
+from flask import Flask, render_template, redirect, session, g, abort, flash, url_for
 from models import db, connect_db, User, UserLanguage, Word
+from forms import UserForm, LanguageForm
 from sqlalchemy.exc import IntegrityError
-from forms import UserForm
 import os
 
 app = Flask(__name__)
@@ -86,7 +86,7 @@ def signup_user():
 
             do_login(user)
 
-            return redirect('/')
+            return redirect(url_for('get_main_page'))
 
         except IntegrityError:
             flash('Username already taken', 'danger')
@@ -115,7 +115,7 @@ def login_user():
 
             if user:
                 do_login(user)
-                return redirect('/')
+                return redirect(url_for('get_main_page'))
             else:
                 flash('Invalid username or password', 'danger')
                 return render_template('login.html', form=form)
@@ -134,8 +134,7 @@ def logout_user():
     """Handle logout of user."""
 
     do_logout()
-    flash('Logged out', 'success')
-    return redirect('/login')
+    return redirect(url_for('get_main_page'))
 
 
 ############################
@@ -146,9 +145,10 @@ def get_user_page():
     """Gets the main page for the logged in user"""
     if not g.user:
         flash('Access unauthorized', 'danger')
-        return redirect('/')
-    
+        return redirect(url_for('get_main_page'))
+
     return render_template('user.html', default_language=DEFAULT_USER_LANGUAGE)
+
 
 @app.route('/user/<string:language>')
 def get_language_page(language):
@@ -159,7 +159,33 @@ def get_language_page(language):
 @app.route('/language/add', methods=['GET', 'POST'])
 def add_language():
     """Adds a new language to the user"""
-    pass
+
+    if not g.user:
+        flash('Access unauthorized', 'danger')
+        return redirect(url_for('get_main_page'))
+
+    form = LanguageForm()
+
+    if form.validate_on_submit():
+        try:
+            language = UserLanguage(
+                user=g.user.username, language=form.language.data)
+
+            db.session.add(language)
+            db.session.commit()
+
+            return redirect(url_for('get_user_page'))
+
+        except IntegrityError:
+            flash('Language already exists', 'danger')
+            return render_template('new_language.html', form=form)
+        except Exception as exc:
+            print(type(exc))
+            print(exc.args)
+            print(exc)
+            abort(404)
+    else:
+        return render_template('new_language.html', form=form)
 
 
 @app.route('/<string:language>/add', methods=['GET', 'POST'])
